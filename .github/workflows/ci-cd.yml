@@ -48,3 +48,17 @@ jobs:
 
       - name: Run tests
         run: python -m pytest
+  package:
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Upload project artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: student-course-enrollment
+          path: student-course-enrollment
