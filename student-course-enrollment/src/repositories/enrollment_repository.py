@@ -43,6 +43,22 @@ class EnrollmentRepository:
 
         return [self._row_to_enrollment(row) for row in rows]
 
+    def get_by_id(self, enrollment_id: int) -> Enrollment | None:
+        with get_connection(self.database_path) as connection:
+            row = connection.execute(
+                """
+                SELECT id, student_id, course_id, grade, enrolled_at
+                FROM enrollments
+                WHERE id = ?
+                """,
+                (enrollment_id,),
+            ).fetchone()
+
+        if row is None:
+            return None
+
+        return self._row_to_enrollment(row)
+
     def get_by_student(self, student_id: int) -> list[Enrollment]:
         with get_connection(self.database_path) as connection:
             rows = connection.execute(
